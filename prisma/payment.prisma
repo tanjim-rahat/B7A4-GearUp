@@ -1,0 +1,16 @@
+model Payment {
+  id                    String        @id @default(uuid())
+  rentalOrderId         String
+  stripeSessionId       String        @unique // Stripe Checkout Session ID
+  stripePaymentIntentId String?       @unique // Stripe Payment Intent ID for webhook tracking
+  amount                Float
+  status                PaymentStatus @default(PENDING)
+  paidAt                DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  // Relations
+  rentalOrder RentalOrder @relation(fields: [rentalOrderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
