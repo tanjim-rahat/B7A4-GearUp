@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { addCategoryController } from "./category.controller";
+import {
+  addCategoryController,
+  getCategoriesController,
+} from "./category.controller";
 import {
   authenticateUser,
   authorizeRoles,
@@ -15,5 +18,7 @@ router.post(
   authorizeRoles(Role.ADMIN),
   addCategoryController,
 );
+
+router.get("/all", getCategoriesController);
 
 export default router;

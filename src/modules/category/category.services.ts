@@ -17,3 +17,15 @@ export const createCategory = async (name: string): Promise<Category> => {
     data: { name: normalizedName },
   });
 };
+
+export const fetchAllCategories = async (): Promise<
+  Pick<Category, "id" | "name">[]
+> => {
+  return prisma.category.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createCategory } from "./category.services";
+import { createCategory, fetchAllCategories } from "./category.services";
 
 export const addCategoryController = async (
   req: Request,
@@ -24,5 +24,18 @@ export const addCategoryController = async (
     });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const getCategoriesController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const categories = await fetchAllCategories();
+    res.status(200).json(categories);
+  } catch (error) {
+    next(error);
   }
 };
