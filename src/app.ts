@@ -2,9 +2,9 @@ import express, { type Application } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import userRouter from "./modules/user/user.route";
-import categoryRouter from "./modules/category/category.route";
-import gearRouter from "./modules/gear/gear.route";
+import userRouter from "./modules/user/user.routes";
+import categoryRouter from "./modules/category/category.routes";
+import gearRouter from "./modules/gear/gear.routes";
 
 const app: Application = express();
 
