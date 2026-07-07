@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createGearItem } from "./gear.services";
+import { createGearItem, updateGearItem } from "./gear.services";
 import type { CreateGearInput } from "../../types/gear.types";
 
 export const createGearItemController = async (
@@ -30,7 +30,34 @@ export const createGearItemController = async (
 
     res
       .status(201)
-      .json({ message: "Inventory item added successfully", gear: newItem });
+      .json({ message: "Gear item added successfully", gear: newItem });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const updateGearItemController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    if (!req.user || req.user.role !== "PROVIDER") {
+      res.status(403).json({ error: "Access denied. Providers only." });
+      return;
+    }
+
+    const { id } = req.params;
+    const updatedItem = await updateGearItem(
+      id as string,
+      req.user.id,
+      req.body,
+    );
+
+    res.status(200).json({
+      message: "Gear item updated successfully",
+      gear: updatedItem,
+    });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }

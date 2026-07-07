@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { createGearItemController } from "./gear.controller";
+import {
+  createGearItemController,
+  updateGearItemController,
+} from "./gear.controller";
 import {
   authenticateUser,
   authorizeRoles,
@@ -13,6 +16,12 @@ router.post(
   authenticateUser,
   authorizeRoles(Role.PROVIDER),
   createGearItemController,
+);
+router.patch(
+  "/:id",
+  authenticateUser,
+  authorizeRoles(Role.PROVIDER),
+  updateGearItemController,
 );
 
 export default router;

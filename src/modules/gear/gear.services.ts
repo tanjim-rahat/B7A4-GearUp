@@ -1,6 +1,6 @@
 import type { GearItem } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import type { CreateGearInput } from "../../types/gear.types";
+import type { CreateGearInput, UpdateGearInput } from "../../types/gear.types";
 
 export const createGearItem = async (
   input: CreateGearInput,
@@ -21,5 +21,24 @@ export const createGearItem = async (
       providerId: input.providerId,
       categoryId: input.categoryId,
     },
+  });
+};
+
+export const updateGearItem = async (
+  id: string,
+  providerId: string,
+  input: UpdateGearInput,
+): Promise<GearItem> => {
+  const existingItem = await prisma.gearItem.findUnique({ where: { id } });
+
+  if (!existingItem || existingItem.providerId !== providerId) {
+    throw new Error(
+      "Gear listing not found or unauthorized modification attempt",
+    );
+  }
+
+  return prisma.gearItem.update({
+    where: { id },
+    data: input,
   });
 };
