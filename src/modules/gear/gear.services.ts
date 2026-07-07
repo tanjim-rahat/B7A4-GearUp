@@ -1,6 +1,43 @@
 import type { GearItem } from "../../../generated/prisma/client";
+import type { GearItemWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
-import type { CreateGearInput, UpdateGearInput } from "../../types/gear.types";
+import type {
+  CreateGearInput,
+  GearFilters,
+  UpdateGearInput,
+} from "../../types/gear.types";
+
+export const fetchGearItems = async (
+  filters: GearFilters,
+): Promise<GearItem[]> => {
+  const whereClause: GearItemWhereInput = { isAvailable: true };
+
+  if (filters.category) {
+    whereClause.category = {
+      name: { equals: filters.category, mode: "insensitive" },
+    };
+  }
+
+  if (filters.brand) {
+    whereClause.brand = { equals: filters.brand, mode: "insensitive" };
+  }
+
+  if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+    whereClause.pricePerDay = {};
+    if (filters.minPrice !== undefined)
+      whereClause.pricePerDay.gte = filters.minPrice;
+    if (filters.maxPrice !== undefined)
+      whereClause.pricePerDay.lte = filters.maxPrice;
+  }
+
+  return prisma.gearItem.findMany({
+    where: whereClause,
+    include: {
+      category: { select: { name: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
 
 export const createGearItem = async (
   input: CreateGearInput,

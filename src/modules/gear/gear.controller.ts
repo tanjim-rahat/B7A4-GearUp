@@ -1,6 +1,38 @@
 import type { Request, Response, NextFunction } from "express";
-import { createGearItem, updateGearItem } from "./gear.services";
-import type { CreateGearInput } from "../../types/gear.types";
+import {
+  createGearItem,
+  fetchGearItems,
+  updateGearItem,
+} from "./gear.services";
+import type { CreateGearInput, GearFilters } from "../../types/gear.types";
+
+export const fetchGearItemsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { category, brand, minPrice, maxPrice } = req.query;
+
+    const filters: GearFilters = {
+      category: category as string,
+      brand: brand as string,
+    };
+
+    if (filters.minPrice !== undefined) {
+      filters.minPrice = Number(minPrice);
+    }
+
+    if (filters.maxPrice !== undefined) {
+      filters.maxPrice = Number(maxPrice);
+    }
+
+    const gear = await fetchGearItems(filters);
+    res.status(200).json(gear);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createGearItemController = async (
   req: Request,

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  fetchGearItemsController,
   createGearItemController,
   updateGearItemController,
 } from "./gear.controller";
@@ -10,6 +11,8 @@ import {
 import { Role } from "../../../generated/prisma/enums";
 
 const router: Router = Router();
+
+router.get("/", fetchGearItemsController);
 
 router.post(
   "/create",
