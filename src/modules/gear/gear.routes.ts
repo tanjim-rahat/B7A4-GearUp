@@ -16,7 +16,7 @@ const router: Router = Router();
 router.get("/", fetchGearItemsController);
 
 router.post(
-  "/create",
+  "/",
   authenticateUser,
   authorizeRoles(Role.PROVIDER),
   createGearItemController,
