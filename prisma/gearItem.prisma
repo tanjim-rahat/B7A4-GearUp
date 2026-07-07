@@ -1,7 +1,7 @@
 model GearItem {
   id          String   @id @default(uuid())
   title       String
-  description String
+  description String?
   brand       String
   pricePerDay Float
   stock       Int      @default(1)
