@@ -1,4 +1,4 @@
-import { Role } from "../../generated/prisma/client";
+import { Role, type User } from "../../generated/prisma/client";
 
 export interface RegisterUserInput {
   email: string;
@@ -6,3 +6,16 @@ export interface RegisterUserInput {
   name: string;
   role?: Role;
 }
+
+export interface LoginUserInput {
+  email: string;
+  password: string;
+}
+
+type AuthUser = Pick<User, "id" | "email" | "name" | "role">;
+
+export type LoginUserResult = {
+  user: AuthUser;
+  accessToken: string;
+  refreshToken: string;
+};
