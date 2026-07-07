@@ -3,6 +3,7 @@ import statusCodes from "http-status";
 import { config } from "../../config";
 import { createUser, getCurrentUser, loginUser } from "./user.services";
 import ms, { type StringValue } from "ms";
+import { Role } from "../../../generated/prisma/enums";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,6 +26,16 @@ export const registerUserController = async (
       res
         .status(statusCodes.BAD_REQUEST)
         .json({ error: "Invalid email format" });
+      return;
+    }
+
+    // check if role is valid
+    const validRoles = [Role.CUSTOMER, Role.PROVIDER];
+
+    if (!validRoles.includes(role)) {
+      res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ error: "Invalid role specified" });
       return;
     }
 
