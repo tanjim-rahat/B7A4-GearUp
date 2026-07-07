@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import {
   createGearItem,
   fetchGearItems,
+  removeGearItem,
   updateGearItem,
 } from "./gear.services";
 import type { CreateGearInput, GearFilters } from "../../types/gear.types";
@@ -90,6 +91,26 @@ export const updateGearItemController = async (
       message: "Gear item updated successfully",
       gear: updatedItem,
     });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const removeGearItemController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    if (!req.user || req.user.role !== "PROVIDER") {
+      res.status(403).json({ error: "Access denied. Providers only." });
+      return;
+    }
+
+    const { id } = req.params;
+    await removeGearItem(id as string, req.user.id);
+
+    res.status(200).json({ message: "Gear item successfully removed" });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }

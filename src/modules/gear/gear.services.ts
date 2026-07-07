@@ -79,3 +79,16 @@ export const updateGearItem = async (
     data: input,
   });
 };
+
+export const removeGearItem = async (
+  id: string,
+  providerId: string,
+): Promise<GearItem> => {
+  const existingItem = await prisma.gearItem.findUnique({ where: { id } });
+
+  if (!existingItem || existingItem.providerId !== providerId) {
+    throw new Error("Gear listing not found or unauthorized deletion attempt");
+  }
+
+  return prisma.gearItem.delete({ where: { id } });
+};

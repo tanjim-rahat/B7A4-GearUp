@@ -3,6 +3,7 @@ import {
   fetchGearItemsController,
   createGearItemController,
   updateGearItemController,
+  removeGearItemController,
 } from "./gear.controller";
 import {
   authenticateUser,
@@ -20,11 +21,19 @@ router.post(
   authorizeRoles(Role.PROVIDER),
   createGearItemController,
 );
+
 router.patch(
   "/:id",
   authenticateUser,
   authorizeRoles(Role.PROVIDER),
   updateGearItemController,
+);
+
+router.delete(
+  "/:id",
+  authenticateUser,
+  authorizeRoles(Role.PROVIDER),
+  removeGearItemController,
 );
 
 export default router;
