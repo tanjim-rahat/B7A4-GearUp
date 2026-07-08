@@ -39,6 +39,26 @@ export const fetchGearItems = async (
   });
 };
 
+export const fetchGearItemDetails = async (
+  id: string,
+): Promise<GearItem | null> => {
+  return prisma.gearItem.findUnique({
+    where: { id },
+    include: {
+      category: { select: { name: true } },
+      reviews: {
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          customer: { select: { name: true } },
+        },
+      },
+    },
+  });
+};
+
 export const createGearItem = async (
   input: CreateGearInput,
 ): Promise<GearItem> => {

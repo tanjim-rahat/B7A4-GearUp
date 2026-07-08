@@ -4,6 +4,7 @@ import {
   createGearItemController,
   updateGearItemController,
   removeGearItemController,
+  fetchGearItemDetailsController,
 } from "./gear.controller";
 import {
   authenticateUser,
@@ -14,6 +15,7 @@ import { Role } from "../../../generated/prisma/enums";
 const router: Router = Router();
 
 router.get("/", fetchGearItemsController);
+router.get("/:id", fetchGearItemDetailsController);
 
 router.post(
   "/",

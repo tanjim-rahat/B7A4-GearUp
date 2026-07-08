@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import {
   createGearItem,
+  fetchGearItemDetails,
   fetchGearItems,
   removeGearItem,
   updateGearItem,
@@ -30,6 +31,26 @@ export const fetchGearItemsController = async (
 
     const gear = await fetchGearItems(filters);
     res.status(200).json(gear);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchGearItemDetailsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const gearItem = await fetchGearItemDetails(id as string);
+
+    if (!gearItem) {
+      res.status(404).json({ error: "Requested gear item could not be found" });
+      return;
+    }
+
+    res.status(200).json(gearItem);
   } catch (error) {
     next(error);
   }
