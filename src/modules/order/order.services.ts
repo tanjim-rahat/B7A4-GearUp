@@ -1,6 +1,7 @@
 import {
   OrderStatus,
   PaymentStatus,
+  Role,
   type RentalOrder,
 } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
@@ -48,9 +49,7 @@ export const createRentalOrder = async (
     });
   }
 
-  // Execute database atomic transaction across orders, sub-items, and create a Stripe intent
   return prisma.$transaction(async (tx) => {
-    // 1. Create primary order record
     const order = await tx.rentalOrder.create({
       data: {
         customerId: input.customerId,
@@ -67,7 +66,6 @@ export const createRentalOrder = async (
       include: { items: true },
     });
 
-    // 2. Generate unique local mock Stripe tracking session reference
     const mockStripeSessionId = `cs_test_${Math.random().toString(36).substring(2, 15)}`;
 
     await tx.payment.create({
@@ -80,5 +78,52 @@ export const createRentalOrder = async (
     });
 
     return order;
+  });
+};
+
+export const fetchOrders = async (
+  userId: string,
+  role: Role,
+): Promise<RentalOrder[]> => {
+  if (role === Role.PROVIDER) {
+    return prisma.rentalOrder.findMany({
+      where: {
+        items: {
+          some: { gearItem: { providerId: userId } },
+        },
+      },
+      include: {
+        items: {
+          include: {
+            gearItem: {
+              include: {
+                category: {
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        },
+        payments: {
+          select: {
+            id: true,
+            amount: true,
+            status: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  return prisma.rentalOrder.findMany({
+    where: { customerId: userId },
+    include: {
+      items: {
+        include: { gearItem: { include: { category: true } } },
+      },
+      payments: true,
+    },
+    orderBy: { createdAt: "desc" },
   });
 };

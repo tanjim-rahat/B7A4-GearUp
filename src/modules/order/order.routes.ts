@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { placeOrderController } from "./order.controller";
+import {
+  fetchOrdersController,
+  placeOrderController,
+} from "./order.controller";
 import {
   authenticateUser,
   authorizeRoles,
@@ -13,6 +16,13 @@ router.post(
   authenticateUser,
   authorizeRoles(Role.CUSTOMER),
   placeOrderController,
+);
+
+router.get(
+  "/",
+  authenticateUser,
+  authorizeRoles(Role.CUSTOMER, Role.PROVIDER),
+  fetchOrdersController,
 );
 
 export default router;
