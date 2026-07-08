@@ -30,6 +30,10 @@ export const fetchGearItems = async (
       whereClause.pricePerDay.lte = filters.maxPrice;
   }
 
+  if (filters.providerId) {
+    whereClause.providerId = { equals: filters.providerId };
+  }
+
   return prisma.gearItem.findMany({
     where: whereClause,
     include: {
