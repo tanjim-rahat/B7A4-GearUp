@@ -8,6 +8,7 @@ import { prisma } from "../../lib/prisma";
 import type {
   CreateRentalOrderInput,
   OrderItemInput,
+  UpdateOrderStatusInput,
 } from "../../types/order.types";
 
 export const createRentalOrder = async (
@@ -125,5 +126,29 @@ export const fetchOrders = async (
       payments: true,
     },
     orderBy: { createdAt: "desc" },
+  });
+};
+
+export const updateOrderStatus = async (
+  input: UpdateOrderStatusInput,
+): Promise<RentalOrder> => {
+  const order = await prisma.rentalOrder.findUnique({
+    where: { id: input.orderId },
+    include: { items: { include: { gearItem: true } } },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  const userOwnsGear = order.items.some(
+    (item) => item.gearItem.providerId === input.providerId,
+  );
+
+  if (!userOwnsGear) {
+    throw new Error("Unauthorized status modification attempt");
+  }
+
+  return prisma.rentalOrder.update({
+    where: { id: input.orderId },
+    data: { status: input.status },
   });
 };

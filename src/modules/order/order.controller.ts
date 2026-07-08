@@ -1,5 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
-import { createRentalOrder, fetchOrders } from "./order.services";
+import {
+  createRentalOrder,
+  fetchOrders,
+  updateOrderStatus,
+} from "./order.services";
 import type { Role } from "../../../generated/prisma/client";
 
 export const placeOrderController = async (
@@ -40,5 +44,28 @@ export const fetchOrdersController = async (
     res.status(200).json(orders);
   } catch (error) {
     next(error);
+  }
+};
+
+export const updateOrderStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { orderId, status } = req.body;
+
+    const updatedOrder = await updateOrderStatus({
+      orderId: orderId as string,
+      providerId: req.user?.id as string,
+      status,
+    });
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 };

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   fetchOrdersController,
   placeOrderController,
+  updateOrderStatusController,
 } from "./order.controller";
 import {
   authenticateUser,
@@ -23,6 +24,13 @@ router.get(
   authenticateUser,
   authorizeRoles(Role.CUSTOMER, Role.PROVIDER),
   fetchOrdersController,
+);
+
+router.patch(
+  "/status",
+  authenticateUser,
+  authorizeRoles(Role.PROVIDER),
+  updateOrderStatusController,
 );
 
 export default router;

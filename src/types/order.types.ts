@@ -1,3 +1,5 @@
+import type { OrderStatus } from "../../generated/prisma/client";
+
 export interface OrderItemInput {
   gearItemId: string;
   quantity: number;
@@ -9,4 +11,10 @@ export interface CreateRentalOrderInput {
   startDate: string;
   endDate: string;
   items: OrderItemInput[];
+}
+
+export interface UpdateOrderStatusInput {
+  orderId: string;
+  providerId: string;
+  status: OrderStatus;
 }
