@@ -134,3 +134,16 @@ export const getCurrentUser = async (userId: string) => {
 
   return user;
 };
+
+export const fetchAllUsers = async () => {
+  const users = await prisma.user.findMany({
+    where: {
+      role: { not: Role.ADMIN }, // Exclude admin users
+    },
+    omit: {
+      password: true,
+    },
+  });
+
+  return users;
+};

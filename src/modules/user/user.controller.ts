@@ -1,7 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import statusCodes from "http-status";
 import { config } from "../../config";
-import { createUser, getCurrentUser, loginUser } from "./user.services";
+import {
+  createUser,
+  fetchAllUsers,
+  getCurrentUser,
+  loginUser,
+} from "./user.services";
 import ms, { type StringValue } from "ms";
 import { Role } from "../../../generated/prisma/enums";
 
@@ -132,5 +137,20 @@ export const getCurrentUserController = async (
   } catch (error: any) {
     console.error(error);
     res.status(statusCodes.NOT_FOUND).json({ error: error.message });
+  }
+};
+
+export const fetchAllUsersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const users = await fetchAllUsers();
+
+    res.status(statusCodes.OK).json({ users });
+  } catch (error: any) {
+    console.error(error);
+    res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };

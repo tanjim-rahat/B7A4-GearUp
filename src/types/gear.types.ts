@@ -9,4 +9,5 @@ export interface GearFilters {
   brand?: string;
   minPrice?: number;
   maxPrice?: number;
+  providerId?: string;
 }
