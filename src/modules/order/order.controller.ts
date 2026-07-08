@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import {
   createRentalOrder,
+  fetchAllOrders,
   fetchOrders,
   updateOrderStatus,
 } from "./order.services";
@@ -67,5 +68,21 @@ export const updateOrderStatusController = async (
     });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const fetchAllOrdersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const orders = await fetchAllOrders();
+
+    console.log(orders);
+
+    res.status(200).json(orders);
+  } catch (error) {
+    next(error);
   }
 };

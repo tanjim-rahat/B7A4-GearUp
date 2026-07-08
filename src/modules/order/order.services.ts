@@ -152,3 +152,29 @@ export const updateOrderStatus = async (
     data: { status: input.status },
   });
 };
+
+export const fetchAllOrders = async (): Promise<RentalOrder[]> => {
+  return prisma.rentalOrder.findMany({
+    include: {
+      items: {
+        include: {
+          gearItem: {
+            include: {
+              category: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      },
+      payments: {
+        select: {
+          id: true,
+          amount: true,
+          status: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
