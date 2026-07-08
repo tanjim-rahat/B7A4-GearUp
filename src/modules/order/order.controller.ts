@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import {
   createRentalOrder,
   fetchAllOrders,
+  fetchOrderById,
   fetchOrders,
   updateOrderStatus,
 } from "./order.services";
@@ -43,6 +44,31 @@ export const fetchOrdersController = async (
     const orders = await fetchOrders(req.user.id, req.user.role as Role);
 
     res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchOrderByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const orderId = req.params.orderId;
+
+    const order = await fetchOrderById(
+      orderId as string,
+      req.user?.id as string,
+      req.user?.role as Role,
+    );
+
+    if (!order) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    res.status(200).json(order);
   } catch (error) {
     next(error);
   }

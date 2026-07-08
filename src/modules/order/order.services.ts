@@ -129,6 +129,45 @@ export const fetchOrders = async (
   });
 };
 
+export const fetchOrderById = async (
+  orderId: string,
+  userId: string,
+  role: Role,
+): Promise<RentalOrder | null> => {
+  if (role === Role.PROVIDER) {
+    return prisma.rentalOrder.findFirst({
+      where: {
+        id: orderId,
+        items: {
+          some: { gearItem: { providerId: userId } },
+        },
+      },
+      include: {
+        items: {
+          include: {
+            gearItem: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+        payments: true,
+      },
+    });
+  }
+
+  return prisma.rentalOrder.findFirst({
+    where: { id: orderId, customerId: userId },
+    include: {
+      items: {
+        include: { gearItem: { include: { category: true } } },
+      },
+      payments: true,
+    },
+  });
+};
+
 export const updateOrderStatus = async (
   input: UpdateOrderStatusInput,
 ): Promise<RentalOrder> => {
