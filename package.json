@@ -4,7 +4,9 @@
   "description": "GearUp is a backend API for a sports and outdoor equipment rental service. Customers can browse available gear, place rental orders, and return equipment. Providers manage their gear inventory and fulfill rental orders. Admins oversee the platform, manage users, and moderate listings.",
   "main": "src/server.ts",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate && tsup src/server.ts --format esm --dts --out-dir dist",
+    "start": "node ./dist/server.js"
   },
   "keywords": [],
   "author": "Tanjim Rahat",
@@ -19,6 +21,7 @@
     "@types/node": "^26.1.0",
     "@types/pg": "^8.20.0",
     "prisma": "^7.8.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   },
