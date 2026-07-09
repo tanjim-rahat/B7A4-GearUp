@@ -5,10 +5,9 @@ import {
   fetchAllOrders,
   fetchOrderById,
   fetchOrders,
-  returnOrder,
   updateOrderStatus,
 } from "./order.services";
-import type { Role } from "../../../generated/prisma/client";
+import { OrderStatus, Role } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 export const placeOrderController = async (
@@ -93,9 +92,25 @@ export const updateOrderStatusController = async (
   try {
     const { orderId, status } = req.body;
 
+    if (
+      req.user?.role === Role.PROVIDER &&
+      ![OrderStatus.CONFIRMED, OrderStatus.RETURNED].includes(status)
+    ) {
+      res.status(400).json({ error: "Invalid status for provider" });
+      return;
+    }
+
+    if (
+      req.user?.role === Role.CUSTOMER &&
+      ![OrderStatus.PICKED_UP, OrderStatus.RETURNED].includes(status)
+    ) {
+      res.status(400).json({ error: "Invalid status for customer" });
+      return;
+    }
+
     const updatedOrder = await updateOrderStatus({
       orderId: orderId as string,
-      providerId: req.user?.id as string,
+      userId: req.user?.id as string,
       status,
     });
 
@@ -104,7 +119,7 @@ export const updateOrderStatusController = async (
       order: updatedOrder,
     });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -141,39 +156,11 @@ export const confirmOrderController = async (
       return;
     }
 
-    const checkoutUrl = await confirmOrder(orderId as string);
+    const checkoutUrl = await confirmOrder(orderId as string, order.totalPrice);
 
     res.status(200).json({
       message: "Please complete the payment to confirm your order.",
       checkoutUrl,
-    });
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-export const returnOrderController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { orderId } = req.params;
-
-    const order = await prisma.order.findUnique({
-      where: { id: orderId as string },
-    });
-
-    if (!order || order.customerId !== req.user?.id) {
-      res.status(404).json({ success: false, error: "Order not found" });
-      return;
-    }
-
-    const updatedOrder = await returnOrder(orderId as string);
-
-    res.status(200).json({
-      message: "Order marked as returned successfully",
-      order: updatedOrder,
     });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

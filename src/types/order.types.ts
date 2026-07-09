@@ -16,6 +16,6 @@ export interface CreateOrderInput {
 
 export interface UpdateOrderStatusInput {
   orderId: string;
-  providerId: string;
+  userId: string;
   status: OrderStatus;
 }

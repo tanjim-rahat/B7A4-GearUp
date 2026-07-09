@@ -124,7 +124,9 @@ export const updateOrderStatus = async (
 
   if (!order) throw new Error("Order not found");
 
-  const userOwnsGear = order.gearItem.providerId === input.providerId;
+  const userOwnsGear =
+    order.gearItem.providerId === input.userId ||
+    order.customerId === input.userId;
 
   if (!userOwnsGear) {
     throw new Error("Unauthorized status modification attempt");
@@ -150,22 +152,11 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
   });
 };
 
-export const confirmOrder = async (orderId: string): Promise<string> => {
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { payment: true },
-  });
-
-  if (!order) throw new Error("Order not found");
-
-  const stripeSession = await createStripeSession(order.id, order.totalPrice);
+export const confirmOrder = async (
+  orderId: string,
+  totalPrice: number,
+): Promise<string> => {
+  const stripeSession = await createStripeSession(orderId, totalPrice);
 
   return stripeSession.url as string;
-};
-
-export const returnOrder = async (orderId: string): Promise<Order> => {
-  return prisma.order.update({
-    where: { id: orderId },
-    data: { status: OrderStatus.RETURNED },
-  });
 };
