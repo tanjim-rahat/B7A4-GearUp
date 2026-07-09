@@ -158,8 +158,6 @@ export const confirmOrder = async (orderId: string): Promise<string> => {
 
   if (!order) throw new Error("Order not found");
 
-  if (!order.payment) throw new Error("Order has no associated payment");
-
   const stripeSession = await createStripeSession(order.id, order.totalPrice);
 
   return stripeSession.url as string;
