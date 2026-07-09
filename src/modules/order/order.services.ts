@@ -162,3 +162,10 @@ export const confirmOrder = async (orderId: string): Promise<string> => {
 
   return stripeSession.url as string;
 };
+
+export const returnOrder = async (orderId: string): Promise<Order> => {
+  return prisma.order.update({
+    where: { id: orderId },
+    data: { status: OrderStatus.RETURNED },
+  });
+};

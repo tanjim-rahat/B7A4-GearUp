@@ -5,6 +5,7 @@ import {
   fetchAllOrders,
   fetchOrderById,
   fetchOrders,
+  returnOrder,
   updateOrderStatus,
 } from "./order.services";
 import type { Role } from "../../../generated/prisma/client";
@@ -145,6 +146,34 @@ export const confirmOrderController = async (
     res.status(200).json({
       message: "Please complete the payment to confirm your order.",
       checkoutUrl,
+    });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const returnOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId as string },
+    });
+
+    if (!order || order.customerId !== req.user?.id) {
+      res.status(404).json({ success: false, error: "Order not found" });
+      return;
+    }
+
+    const updatedOrder = await returnOrder(orderId as string);
+
+    res.status(200).json({
+      message: "Order marked as returned successfully",
+      order: updatedOrder,
     });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

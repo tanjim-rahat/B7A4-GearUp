@@ -5,6 +5,7 @@ import {
   fetchOrderByIdController,
   fetchOrdersController,
   placeOrderController,
+  returnOrderController,
   updateOrderStatusController,
 } from "./order.controller";
 import {
@@ -46,11 +47,20 @@ router.get(
   fetchAllOrdersController,
 );
 
+// CONFIRM ORDER FOR CUSTOMER
 router.get(
   "/:orderId/confirm",
   authenticateUser,
   authorizeRoles(Role.CUSTOMER),
   confirmOrderController,
+);
+
+// RETURN ORDER FOR CUSTOMER
+router.patch(
+  "/:orderId/return",
+  authenticateUser,
+  authorizeRoles(Role.CUSTOMER),
+  returnOrderController,
 );
 
 export default router;
