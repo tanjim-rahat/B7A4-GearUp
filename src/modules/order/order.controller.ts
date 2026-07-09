@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import {
+  confirmOrder,
   createOrder,
   fetchAllOrders,
   fetchOrderById,
@@ -119,5 +120,30 @@ export const fetchAllOrdersController = async (
     res.status(200).json(orders);
   } catch (error) {
     next(error);
+  }
+};
+
+export const confirmOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await fetchOrderById(
+      orderId as string,
+      req.user?.id as string,
+      req.user?.role as Role,
+    );
+
+    const checkoutUrl = await confirmOrder(orderId as string);
+
+    res.status(200).json({
+      message: "Please complete the payment to confirm your order.",
+      checkoutUrl,
+    });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 };

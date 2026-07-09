@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  confirmOrderController,
   fetchAllOrdersController,
   fetchOrderByIdController,
   fetchOrdersController,
@@ -43,6 +44,13 @@ router.get(
   authenticateUser,
   authorizeRoles(Role.ADMIN),
   fetchAllOrdersController,
+);
+
+router.get(
+  "/:orderId/confirm",
+  authenticateUser,
+  authorizeRoles(Role.CUSTOMER),
+  confirmOrderController,
 );
 
 export default router;

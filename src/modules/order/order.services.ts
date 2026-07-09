@@ -1,4 +1,5 @@
 import {
+  OrderStatus,
   PaymentStatus,
   Role,
   type Order,
@@ -8,6 +9,7 @@ import type {
   CreateOrderInput,
   UpdateOrderStatusInput,
 } from "../../types/order.types";
+import { createStripeSession } from "../payment/payment.services";
 
 export const createOrder = async (input: CreateOrderInput): Promise<Order> => {
   const start = new Date(input.startDate);
@@ -151,4 +153,19 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
     },
     orderBy: { createdAt: "desc" },
   });
+};
+
+export const confirmOrder = async (orderId: string): Promise<string> => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { payment: true },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  if (!order.payment) throw new Error("Order has no associated payment");
+
+  const stripeSession = await createStripeSession(order.id, order.totalPrice);
+
+  return stripeSession.url as string;
 };
