@@ -8,6 +8,7 @@ import {
   updateOrderStatus,
 } from "./order.services";
 import type { Role } from "../../../generated/prisma/client";
+import { prisma } from "../../lib/prisma";
 
 export const placeOrderController = async (
   req: Request,
@@ -131,11 +132,14 @@ export const confirmOrderController = async (
   try {
     const { orderId } = req.params;
 
-    const order = await fetchOrderById(
-      orderId as string,
-      req.user?.id as string,
-      req.user?.role as Role,
-    );
+    const order = await prisma.order.findUnique({
+      where: { id: orderId as string },
+    });
+
+    if (!order) {
+      res.status(404).json({ success: false, error: "Order not found" });
+      return;
+    }
 
     const checkoutUrl = await confirmOrder(orderId as string);
 

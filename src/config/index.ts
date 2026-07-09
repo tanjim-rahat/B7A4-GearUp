@@ -16,4 +16,5 @@ export const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
 
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
 };

@@ -45,17 +45,6 @@ export const createOrder = async (input: CreateOrderInput): Promise<Order> => {
       },
     });
 
-    const mockStripeSessionId = `cs_test_${Math.random().toString(36).substring(2, 15)}`;
-
-    await tx.payment.create({
-      data: {
-        orderId: order.id,
-        stripeSessionId: mockStripeSessionId,
-        amount: totalOrderPrice,
-        status: PaymentStatus.PENDING,
-      },
-    });
-
     return order;
   });
 };
