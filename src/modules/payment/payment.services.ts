@@ -1,4 +1,5 @@
 import { config } from "../../config";
+import { prisma } from "../../lib/prisma";
 import { stripeClient } from "../../lib/stripe";
 import stripe from "stripe";
 
@@ -25,4 +26,14 @@ export const createStripeSession = async (
   });
 
   return session;
+};
+
+export const fetchPayments = async (userId: string) => {
+  const payments = await prisma.payment.findMany({
+    where: { order: { customerId: userId } },
+    omit: {
+      stripeSessionId: true,
+    },
+  });
+  return payments;
 };

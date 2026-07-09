@@ -5,6 +5,7 @@ import { prisma } from "../../lib/prisma";
 import { config } from "../../config";
 import statusCodes from "http-status-codes";
 import { PaymentStatus } from "../../../generated/prisma/client";
+import { fetchPayments } from "./payment.services";
 
 export const successPageController = (req: Request, res: Response) => {
   res.send(`
@@ -72,5 +73,20 @@ export const stripeWebhookController = async (
   } catch (error) {
     console.error("Error processing Stripe webhook:", error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+export const fetchPaymentsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id as string;
+    const payments = await fetchPayments(userId);
+    res.json({ success: true, data: payments });
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
