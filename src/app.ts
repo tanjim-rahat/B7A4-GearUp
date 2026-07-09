@@ -28,6 +28,20 @@ app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/payment", paymentRouter);
 
+app.get("/", (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>GearUp API</title>
+      </head>
+      <body>
+        <h1>Welcome to GearUp API</h1>
+        <p>GearUp is a backend API for a sports and outdoor equipment rental service. Customers can browse available gear, place rental orders, and return equipment. Providers manage their gear inventory and fulfill rental orders. Admins oversee the platform, manage users, and moderate listings.</p>
+      </body>
+    </html>
+  `);
+});
+
 // CATCH ALL ERROR HANDLER
 app.use((err: any, req: express.Request, res: express.Response) => {
   console.error(err.stack);
