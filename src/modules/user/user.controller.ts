@@ -70,14 +70,14 @@ export const loginUserController = async (
     if (!email || !password) {
       res
         .status(statusCodes.BAD_REQUEST)
-        .json({ error: "Missing required login fields" });
+        .json({ success: false, error: "Missing required login fields" });
       return;
     }
 
     if (!emailRegex.test(email)) {
       res
         .status(statusCodes.BAD_REQUEST)
-        .json({ error: "Invalid email format" });
+        .json({ success: false, error: "Invalid email format" });
       return;
     }
 

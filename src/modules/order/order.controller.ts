@@ -24,7 +24,9 @@ export const placeOrderController = async (
       !gearItemId ||
       quantity === undefined
     ) {
-      res.status(400).json({ error: "Missing required order fields" });
+      res
+        .status(400)
+        .json({ success: false, error: "Missing required order fields" });
       return;
     }
 
@@ -36,11 +38,13 @@ export const placeOrderController = async (
       quantity,
     });
 
-    res
-      .status(201)
-      .json({ message: "Rental Order placed successfully", order });
+    res.status(201).json({
+      success: true,
+      message: "Rental Order placed successfully",
+      data: order,
+    });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -54,7 +58,7 @@ export const fetchOrdersController = async (
 
     const orders = await fetchOrders(req.user.id, req.user.role as Role);
 
-    res.status(200).json(orders);
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     next(error);
   }
@@ -74,11 +78,11 @@ export const fetchOrderByIdController = async (
     );
 
     if (!order) {
-      res.status(404).json({ error: "Order not found" });
+      res.status(404).json({ success: false, error: "Order not found" });
       return;
     }
 
-    res.status(200).json(order);
+    res.status(200).json({ success: true, data: order });
   } catch (error) {
     next(error);
   }
@@ -96,7 +100,9 @@ export const updateOrderStatusController = async (
       req.user?.role === Role.PROVIDER &&
       ![OrderStatus.CONFIRMED, OrderStatus.RETURNED].includes(status)
     ) {
-      res.status(400).json({ error: "Invalid status for provider" });
+      res
+        .status(400)
+        .json({ success: false, error: "Invalid status for provider" });
       return;
     }
 
@@ -104,7 +110,9 @@ export const updateOrderStatusController = async (
       req.user?.role === Role.CUSTOMER &&
       ![OrderStatus.PICKED_UP, OrderStatus.RETURNED].includes(status)
     ) {
-      res.status(400).json({ error: "Invalid status for customer" });
+      res
+        .status(400)
+        .json({ success: false, error: "Invalid status for customer" });
       return;
     }
 
@@ -115,8 +123,9 @@ export const updateOrderStatusController = async (
     });
 
     res.status(200).json({
+      success: true,
       message: "Order status updated successfully",
-      order: updatedOrder,
+      data: updatedOrder,
     });
   } catch (error: any) {
     next(error);
@@ -131,9 +140,7 @@ export const fetchAllOrdersController = async (
   try {
     const orders = await fetchAllOrders();
 
-    console.log(orders);
-
-    res.status(200).json(orders);
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     next(error);
   }
@@ -159,10 +166,11 @@ export const confirmOrderController = async (
     const checkoutUrl = await confirmOrder(orderId as string, order.totalPrice);
 
     res.status(200).json({
+      success: true,
       message: "Please complete the payment to confirm your order.",
-      checkoutUrl,
+      data: { checkoutUrl },
     });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };

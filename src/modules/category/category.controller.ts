@@ -19,11 +19,12 @@ export const addCategoryController = async (
     const newCategory = await createCategory(name);
 
     res.status(201).json({
+      success: true,
       message: "Gear category successfully established",
-      category: newCategory,
+      data: newCategory,
     });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -34,7 +35,7 @@ export const getCategoriesController = async (
 ): Promise<void> => {
   try {
     const categories = await fetchAllCategories();
-    res.status(200).json(categories);
+    res.status(200).json({ success: true, data: categories });
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,11 @@
-import express, { type Application } from "express";
+import express, {
+  type Application,
+  type Request,
+  type Response,
+} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import statusCodes from "http-status-codes";
 
 import userRouter from "./modules/user/user.routes";
 import categoryRouter from "./modules/category/category.routes";
@@ -43,9 +48,9 @@ app.get("/", (req, res) => {
 });
 
 // CATCH ALL ERROR HANDLER
-app.use((err: any, req: express.Request, res: express.Response) => {
+app.use((err: any, req: Request, res: Response) => {
   console.error(err.stack);
-  res.status(500).json({
+  res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: "Internal Server Error",
     details: err.message,

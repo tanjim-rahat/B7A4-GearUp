@@ -39,7 +39,11 @@ export const fetchGearItemsController = async (
     }
 
     const gear = await fetchGearItems(filters);
-    res.status(200).json(gear);
+
+    res.status(200).json({
+      success: true,
+      data: gear,
+    });
   } catch (error) {
     next(error);
   }
@@ -59,7 +63,10 @@ export const fetchGearItemDetailsController = async (
       return;
     }
 
-    res.status(200).json(gearItem);
+    res.status(200).json({
+      success: true,
+      data: gearItem,
+    });
   } catch (error) {
     next(error);
   }
@@ -93,9 +100,13 @@ export const createGearItemController = async (
 
     res
       .status(201)
-      .json({ message: "Gear item added successfully", gear: newItem });
+      .json({
+        success: true,
+        message: "Gear item added successfully",
+        data: newItem,
+      });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -106,7 +117,9 @@ export const updateGearItemController = async (
 ): Promise<void> => {
   try {
     if (!req.user || req.user.role !== "PROVIDER") {
-      res.status(403).json({ error: "Access denied. Providers only." });
+      res
+        .status(403)
+        .json({ success: false, error: "Access denied. Providers only." });
       return;
     }
 
@@ -118,11 +131,12 @@ export const updateGearItemController = async (
     );
 
     res.status(200).json({
+      success: true,
       message: "Gear item updated successfully",
-      gear: updatedItem,
+      data: updatedItem,
     });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -133,15 +147,19 @@ export const removeGearItemController = async (
 ): Promise<void> => {
   try {
     if (!req.user || req.user.role !== "PROVIDER") {
-      res.status(403).json({ error: "Access denied. Providers only." });
+      res
+        .status(403)
+        .json({ success: false, error: "Access denied. Providers only." });
       return;
     }
 
     const { id } = req.params;
     await removeGearItem(id as string, req.user.id);
 
-    res.status(200).json({ message: "Gear item successfully removed" });
+    res
+      .status(200)
+      .json({ success: true, message: "Gear item successfully removed" });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
