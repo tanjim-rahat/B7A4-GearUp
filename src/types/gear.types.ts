@@ -10,4 +10,5 @@ export interface GearFilters {
   minPrice?: number;
   maxPrice?: number;
   providerId?: string;
+  isAvailable?: boolean;
 }

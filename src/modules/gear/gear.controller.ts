@@ -7,6 +7,7 @@ import {
   updateGearItem,
 } from "./gear.services";
 import type { CreateGearInput, GearFilters } from "../../types/gear.types";
+import { Role } from "../../../generated/prisma/enums";
 
 export const fetchGearItemsController = async (
   req: Request,
@@ -27,6 +28,14 @@ export const fetchGearItemsController = async (
 
     if (filters.maxPrice !== undefined) {
       filters.maxPrice = Number(maxPrice);
+    }
+
+    if (req.user?.role === Role.PROVIDER) {
+      filters.providerId = req.user.id;
+    }
+
+    if (req.user?.role === Role.CUSTOMER) {
+      filters.isAvailable = true;
     }
 
     const gear = await fetchGearItems(filters);

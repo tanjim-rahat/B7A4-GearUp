@@ -10,7 +10,7 @@ import type {
 export const fetchGearItems = async (
   filters: GearFilters,
 ): Promise<GearItem[]> => {
-  const whereClause: GearItemWhereInput = { isAvailable: true };
+  const whereClause: GearItemWhereInput = {};
 
   if (filters.category) {
     whereClause.category = {
