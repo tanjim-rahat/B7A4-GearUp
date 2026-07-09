@@ -7,6 +7,15 @@ export const createStripeSession = async (
   orderId: string,
   amount: number,
 ): Promise<stripe.Checkout.Session> => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { customer: { select: { email: true } } },
+  });
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
   const session = await stripeClient.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
@@ -20,6 +29,7 @@ export const createStripeSession = async (
       },
     ],
     mode: "payment",
+    customer_email: order.customer.email,
     success_url: `${config.APP_URL}/api/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.APP_URL}/api/payment/cancel`,
     metadata: { orderId }, // Used to match the webhook later
