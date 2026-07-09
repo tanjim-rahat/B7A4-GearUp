@@ -4,6 +4,7 @@ import {
   getCurrentUserController,
   loginUserController,
   registerUserController,
+  updateUserStatusController,
 } from "./user.controller";
 import {
   authenticateUser,
@@ -22,6 +23,14 @@ router.get(
   authenticateUser,
   authorizeRoles(Role.ADMIN),
   fetchAllUsersController,
+);
+
+// STATUS UPDATE FOR ADMIN
+router.patch(
+  "/:userId/status",
+  authenticateUser,
+  authorizeRoles(Role.ADMIN),
+  updateUserStatusController,
 );
 
 export default router;

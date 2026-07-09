@@ -147,3 +147,22 @@ export const fetchAllUsers = async () => {
 
   return users;
 };
+
+export const updateUserStatus = async (
+  userId: string,
+  status: UserStatus,
+): Promise<Pick<User, "id" | "email" | "name" | "role" | "status">> => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { status },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      status: true,
+    },
+  });
+
+  return updatedUser;
+};

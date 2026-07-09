@@ -6,9 +6,10 @@ import {
   fetchAllUsers,
   getCurrentUser,
   loginUser,
+  updateUserStatus,
 } from "./user.services";
 import ms, { type StringValue } from "ms";
-import { Role } from "../../../generated/prisma/enums";
+import { Role, UserStatus } from "../../../generated/prisma/enums";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -155,6 +156,51 @@ export const fetchAllUsersController = async (
     const users = await fetchAllUsers();
 
     res.status(statusCodes.OK).json({ success: true, users });
+  } catch (error: any) {
+    console.error(error);
+    res
+      .status(statusCodes.BAD_REQUEST)
+      .json({ success: false, error: error.message });
+  }
+};
+
+export const updateUserStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    if (!Object.values(UserStatus).includes(status)) {
+      res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ success: false, error: "Invalid user status" });
+      return;
+    }
+
+    if (!userId || !status) {
+      res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ success: false, error: "Invalid user status" });
+      return;
+    }
+
+    if (!userId || !status) {
+      res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ success: false, error: "Missing required fields" });
+      return;
+    }
+
+    const updatedUser = await updateUserStatus(userId as string, status);
+
+    res.status(statusCodes.OK).json({
+      success: true,
+      message: "User status updated",
+      user: updatedUser,
+    });
   } catch (error: any) {
     console.error(error);
     res
