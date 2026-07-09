@@ -1,9 +1,4 @@
-import {
-  OrderStatus,
-  PaymentStatus,
-  Role,
-  type Order,
-} from "../../../generated/prisma/client";
+import { Role, type Order } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import type {
   CreateOrderInput,
@@ -60,6 +55,12 @@ export const fetchOrders = async (
           providerId: userId,
         },
       },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  if (role === Role.ADMIN) {
+    return prisma.order.findMany({
       orderBy: { createdAt: "desc" },
     });
   }
@@ -135,20 +136,6 @@ export const updateOrderStatus = async (
   return prisma.order.update({
     where: { id: input.orderId },
     data: { status: input.status },
-  });
-};
-
-export const fetchAllOrders = async (): Promise<Order[]> => {
-  return prisma.order.findMany({
-    include: {
-      gearItem: {
-        include: {
-          category: true,
-        },
-      },
-      payment: true,
-    },
-    orderBy: { createdAt: "desc" },
   });
 };
 

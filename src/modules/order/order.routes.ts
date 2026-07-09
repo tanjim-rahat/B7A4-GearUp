@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   confirmOrderController,
-  fetchAllOrdersController,
   fetchOrderByIdController,
   fetchOrdersController,
   placeOrderController,
@@ -26,7 +25,7 @@ router.post(
 router.get(
   "/",
   authenticateUser,
-  authorizeRoles(Role.CUSTOMER, Role.PROVIDER),
+  authorizeRoles(Role.CUSTOMER, Role.PROVIDER, Role.ADMIN),
   fetchOrdersController,
 );
 
@@ -37,13 +36,6 @@ router.patch(
   authenticateUser,
   authorizeRoles(Role.PROVIDER, Role.CUSTOMER),
   updateOrderStatusController,
-);
-
-router.get(
-  "/all",
-  authenticateUser,
-  authorizeRoles(Role.ADMIN),
-  fetchAllOrdersController,
 );
 
 // CONFIRM ORDER FOR CUSTOMER

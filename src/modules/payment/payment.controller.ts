@@ -59,12 +59,13 @@ export const stripeWebhookController = async (
         select: { totalPrice: true },
       });
 
+      console.log(orderId);
+
       await prisma.payment.create({
         data: {
           orderId: orderId!,
           stripeSessionId: session.id,
           amount: order.totalPrice,
-          status: PaymentStatus.PENDING,
         },
       });
     }

@@ -2,7 +2,6 @@ import type { Request, Response, NextFunction } from "express";
 import {
   confirmOrder,
   createOrder,
-  fetchAllOrders,
   fetchOrderById,
   fetchOrders,
   updateOrderStatus,
@@ -54,9 +53,10 @@ export const fetchOrdersController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    if (!req.user) return;
-
-    const orders = await fetchOrders(req.user.id, req.user.role as Role);
+    const orders = await fetchOrders(
+      req.user?.id as string,
+      req.user?.role as Role,
+    );
 
     res.status(200).json({ success: true, data: orders });
   } catch (error) {
@@ -128,20 +128,6 @@ export const updateOrderStatusController = async (
       data: updatedOrder,
     });
   } catch (error: any) {
-    next(error);
-  }
-};
-
-export const fetchAllOrdersController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> => {
-  try {
-    const orders = await fetchAllOrders();
-
-    res.status(200).json({ success: true, data: orders });
-  } catch (error) {
     next(error);
   }
 };
