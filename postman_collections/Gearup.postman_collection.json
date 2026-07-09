@@ -1,0 +1,947 @@
+{
+  "info": {
+    "_postman_id": "2c5ad1e4-e0d8-4f83-9687-b7d649533298",
+    "name": "Gearup",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25114735",
+    "_collection_link": "https://go.postman.co/collection/25114735-2c5ad1e4-e0d8-4f83-9687-b7d649533298?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@gearup.com\",\r\n  \"password\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/login",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Winter Sports\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/category/create",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "category",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View All Categories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Cycling\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/category/all",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "category",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/api/user/all",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Suspend/Activate User",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"ACTIVE\"\r\n    // \"status\": \"SUSPENDED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/{{USER_ID}}/status",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "{{USER_ID}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View All Gears",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "cycling",
+                  "disabled": true
+                },
+                {
+                  "key": "brand",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View All Orders",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Jane Doe\",\r\n  \"email\": \"jane.doe@example.com\",\r\n  \"password\": \"SecurePassword123!\",\r\n  \"role\": \"CUSTOMER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/register",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"jane.doe@example.com\",\r\n  \"password\": \"SecurePassword123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/login",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Gears (FILTERS)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear"
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-06-15T10:00:00.000Z\",\r\n  \"endDate\": \"2026-06-20T10:00:00.000Z\",\r\n  \"gearItemId\": \"fdf944b5-f7a0-4726-a564-e035f334673c\",\r\n  \"quantity\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            },
+            "description": "You must be logged in as customer to place an order"
+          },
+          "response": []
+        },
+        {
+          "name": "View Orders",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Track Order",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order/{{ORDER_ID}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "{{ORDER_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm and Pay Order",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order/{{ORDER_ID}}/confirm",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "{{ORDER_ID}}",
+                "confirm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pickup Order",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"orderId\": \"{{ORDER_ID}}\",\r\n    \"status\": \"PICKED_UP\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order/status",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Return Order",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"orderId\": \"{{ORDER_ID}}\",\r\n    \"status\": \"RETURNED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order/status",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\": 5,\r\n    \"comment\": \"Fantastic!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/review/{{ORDER_ID}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "review",
+                "{{ORDER_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Histories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\": 5,\r\n    \"comment\": \"Very nice\"\r\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/payment",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "payment"
+              ]
+            },
+            "description": "View all the payments made by the user/cutomer"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Provider",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Summit Gear\",\r\n    \"email\": \"rentals2@summitgear.com\",\r\n    \"password\": \"ShopPassword2026#\",\r\n    \"role\": \"PROVIDER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/register",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"rentals@summitgear.com\",\r\n  \"password\": \"ShopPassword2026#\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/user/login",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Gear",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Gears",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear"
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Gear (Stock, Availability and Others)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n//   \"title\": \"Premium 4-Person Waterproof Camping Tent (Updated Version)\",\r\n//   \"description\": \"Upgraded with reinforced aluminum poles and an extended rainfly for maximum heavy rain protection.\",\r\n//   \"pricePerDay\": 39.99,\r\n  \"stock\": 6\r\n//   \"isAvailable\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear/{{GEAR_ID}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear",
+                "{{GEAR_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Gear",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear/{{GEAR_ID}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear",
+                "{{GEAR_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Orders",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-06-15T10:00:00.000Z\",\r\n  \"endDate\": \"2026-06-20T10:00:00.000Z\",\r\n  \"items\": [\r\n    {\r\n      \"gearItemId\": \"63f1e9bb-69f7-451d-9899-b48c1bbbd764\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"orderId\": \"{{ORDER_ID}}\",\r\n  \"status\": \"CONFIRMED\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/order/status",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Fetch Gear (FILTERS)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear"
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch Gear Item Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"21-Speed Mountain Trail Bike\",\r\n  \"description\": \"Aluminum frame with front suspension fork, disc brakes, and rugged all-terrain tires. Helmet included with rental.\",\r\n  \"brand\": \"Trek\",\r\n  \"pricePerDay\": 45.50,\r\n  \"stock\": 3,\r\n  \"categoryId\": \"a003069c-e04d-45bb-90c0-c2a36c3f1879\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/api/gear/{{GEAR_ID}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "gear",
+                "{{GEAR_ID}}"
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "View Current User",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{HOST}}/api/user/me",
+          "host": [
+            "{{HOST}}"
+          ],
+          "path": [
+            "api",
+            "user",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
