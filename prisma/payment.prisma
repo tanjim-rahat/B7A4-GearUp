@@ -1,13 +1,10 @@
 model Payment {
-  id                    String        @id @default(uuid())
-  orderId               String        @unique
-  stripeSessionId       String        @unique // Stripe Checkout Session ID
-  stripePaymentIntentId String?       @unique // Stripe Payment Intent ID for webhook tracking
-  amount                Float
-  status                PaymentStatus @default(PENDING)
-  paidAt                DateTime?
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  id              String   @id @default(uuid())
+  orderId         String   @unique
+  stripeSessionId String   @unique
+  amount          Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   // Relations
   order Order @relation(fields: [orderId], references: [id])
