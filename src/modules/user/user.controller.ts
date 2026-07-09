@@ -21,16 +21,17 @@ export const registerUserController = async (
     const { email, password, name, role } = req.body;
 
     if (!email || !password || !name) {
-      res
-        .status(statusCodes.BAD_REQUEST)
-        .json({ error: "Missing required registration fields" });
+      res.status(statusCodes.BAD_REQUEST).json({
+        success: false,
+        error: "Missing required registration fields",
+      });
       return;
     }
 
     if (!emailRegex.test(email)) {
       res
         .status(statusCodes.BAD_REQUEST)
-        .json({ error: "Invalid email format" });
+        .json({ success: false, error: "Invalid email format" });
       return;
     }
 
@@ -40,7 +41,7 @@ export const registerUserController = async (
     if (!validRoles.includes(role)) {
       res
         .status(statusCodes.BAD_REQUEST)
-        .json({ error: "Invalid role specified" });
+        .json({ success: false, error: "Invalid role specified" });
       return;
     }
 
@@ -48,10 +49,12 @@ export const registerUserController = async (
 
     res
       .status(statusCodes.CREATED)
-      .json({ message: "User registered successfully", user });
+      .json({ success: true, message: "User registered successfully", user });
   } catch (error: any) {
     console.error(error);
-    res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    res
+      .status(statusCodes.BAD_REQUEST)
+      .json({ success: false, error: error.message });
   }
 };
 
@@ -98,6 +101,7 @@ export const loginUserController = async (
     });
 
     res.status(statusCodes.OK).json({
+      success: true,
       message: "Login successful",
       user: result.user,
       accessToken: result.accessToken,
@@ -114,7 +118,7 @@ export const loginUserController = async (
           ? statusCodes.FORBIDDEN
           : statusCodes.BAD_REQUEST;
 
-    res.status(status).json({ error: message });
+    res.status(status).json({ success: false, error: message });
   }
 };
 
@@ -127,16 +131,18 @@ export const getCurrentUserController = async (
     if (!req.user) {
       res
         .status(statusCodes.UNAUTHORIZED)
-        .json({ error: "Authentication required" });
+        .json({ success: false, error: "Authentication required" });
       return;
     }
 
     const user = await getCurrentUser(req.user.id);
 
-    res.status(statusCodes.OK).json({ user });
+    res.status(statusCodes.OK).json({ success: true, user });
   } catch (error: any) {
     console.error(error);
-    res.status(statusCodes.NOT_FOUND).json({ error: error.message });
+    res
+      .status(statusCodes.NOT_FOUND)
+      .json({ success: false, error: error.message });
   }
 };
 
@@ -148,9 +154,11 @@ export const fetchAllUsersController = async (
   try {
     const users = await fetchAllUsers();
 
-    res.status(statusCodes.OK).json({ users });
+    res.status(statusCodes.OK).json({ success: true, users });
   } catch (error: any) {
     console.error(error);
-    res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    res
+      .status(statusCodes.BAD_REQUEST)
+      .json({ success: false, error: error.message });
   }
 };
