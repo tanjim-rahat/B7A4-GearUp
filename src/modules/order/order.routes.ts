@@ -30,7 +30,7 @@ router.get(
   fetchOrdersController,
 );
 
-router.get("/:id", authenticateUser, fetchOrderByIdController);
+router.get("/:orderId", authenticateUser, fetchOrderByIdController);
 
 router.patch(
   "/status",

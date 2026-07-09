@@ -81,26 +81,32 @@ export const fetchOrders = async (
 export const fetchOrderById = async (
   orderId: string,
   userId: string,
-  role: Role,
-): Promise<Order | null> => {
-  if (role === Role.PROVIDER) {
-    return prisma.order.findFirst({
-      where: {
-        id: orderId,
-      },
-      include: {
-        gearItem: true,
-        payment: true,
-      },
-    });
-  }
-
+): Promise<Partial<Order> | null> => {
   return prisma.order.findFirst({
-    where: { id: orderId, customerId: userId },
+    where: {
+      id: orderId,
+      OR: [{ customerId: userId }, { gearItem: { providerId: userId } }],
+    },
+
+    omit: {
+      gearItemId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+
     include: {
       gearItem: {
+        omit: {
+          createdAt: true,
+          updatedAt: true,
+          categoryId: true,
+        },
         include: {
-          category: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
       payment: true,

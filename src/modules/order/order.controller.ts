@@ -71,7 +71,6 @@ export const fetchOrderByIdController = async (
     const order = await fetchOrderById(
       orderId as string,
       req.user?.id as string,
-      req.user?.role as Role,
     );
 
     if (!order) {
