@@ -12,10 +12,10 @@ model GearItem {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  provider   User        @relation("ProviderGear", fields: [providerId], references: [id], onDelete: Cascade)
-  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  orderItems OrderItem[]
-  reviews    Review[]
+  provider User     @relation("ProviderGear", fields: [providerId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  reviews  Review[]
+  orders   Order[]
 
   @@map("gear_items")
 }

@@ -1,23 +1,18 @@
 import {
-  OrderStatus,
   PaymentStatus,
   Role,
-  type RentalOrder,
+  type Order,
 } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import type {
-  CreateRentalOrderInput,
-  OrderItemInput,
+  CreateOrderInput,
   UpdateOrderStatusInput,
 } from "../../types/order.types";
 
-export const createRentalOrder = async (
-  input: CreateRentalOrderInput,
-): Promise<RentalOrder> => {
+export const createOrder = async (input: CreateOrderInput): Promise<Order> => {
   const start = new Date(input.startDate);
   const end = new Date(input.endDate);
 
-  // Calculate rental duration in days
   const timeDifference = end.getTime() - start.getTime();
   const rentalDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
@@ -25,53 +20,34 @@ export const createRentalOrder = async (
     throw new Error("End date must be at least 1 day after the start date.");
   }
 
-  // Resolve item validation and snapshot dynamic current pricing
-  let totalOrderPrice = 0;
-  const processedItems: OrderItemInput[] = [];
+  const gearItem = await prisma.gearItem.findUnique({
+    where: { id: input.gearItemId },
+  });
 
-  for (const item of input.items) {
-    const gear = await prisma.gearItem.findUnique({
-      where: { id: item.gearItemId },
-    });
-
-    if (!gear || !gear.isAvailable || gear.stock < item.quantity) {
-      throw new Error(
-        `Gear item ${item.gearItemId} is either unavailable or has insufficient stock.`,
-      );
-    }
-
-    const itemTotalPrice = gear.pricePerDay * rentalDays * item.quantity;
-    totalOrderPrice += itemTotalPrice;
-
-    processedItems.push({
-      gearItemId: item.gearItemId,
-      quantity: item.quantity,
-      priceAtRental: gear.pricePerDay,
-    });
+  if (!gearItem) {
+    throw new Error("Gear item not found.");
   }
 
+  // Resolve item validation and snapshot dynamic current pricing
+  const totalOrderPrice = input.quantity * rentalDays * gearItem.pricePerDay;
+
   return prisma.$transaction(async (tx) => {
-    const order = await tx.rentalOrder.create({
+    const order = await tx.order.create({
       data: {
         customerId: input.customerId,
+        gearItemId: input.gearItemId,
         startDate: start,
         endDate: end,
         totalPrice: totalOrderPrice,
-        status: OrderStatus.PLACED,
-        items: {
-          createMany: {
-            data: processedItems,
-          },
-        },
+        quantity: input.quantity,
       },
-      include: { items: true },
     });
 
     const mockStripeSessionId = `cs_test_${Math.random().toString(36).substring(2, 15)}`;
 
     await tx.payment.create({
       data: {
-        rentalOrderId: order.id,
+        orderId: order.id,
         stripeSessionId: mockStripeSessionId,
         amount: totalOrderPrice,
         status: PaymentStatus.PENDING,
@@ -85,45 +61,27 @@ export const createRentalOrder = async (
 export const fetchOrders = async (
   userId: string,
   role: Role,
-): Promise<RentalOrder[]> => {
+): Promise<Order[]> => {
   if (role === Role.PROVIDER) {
-    return prisma.rentalOrder.findMany({
+    return prisma.order.findMany({
       where: {
-        items: {
-          some: { gearItem: { providerId: userId } },
-        },
-      },
-      include: {
-        items: {
-          include: {
-            gearItem: {
-              include: {
-                category: {
-                  select: { name: true },
-                },
-              },
-            },
-          },
-        },
-        payments: {
-          select: {
-            id: true,
-            amount: true,
-            status: true,
-          },
+        gearItem: {
+          providerId: userId,
         },
       },
       orderBy: { createdAt: "desc" },
     });
   }
 
-  return prisma.rentalOrder.findMany({
+  return prisma.order.findMany({
     where: { customerId: userId },
     include: {
-      items: {
-        include: { gearItem: { include: { category: true } } },
+      payment: true,
+      gearItem: {
+        include: {
+          category: true,
+        },
       },
-      payments: true,
     },
     orderBy: { createdAt: "desc" },
   });
@@ -133,86 +91,63 @@ export const fetchOrderById = async (
   orderId: string,
   userId: string,
   role: Role,
-): Promise<RentalOrder | null> => {
+): Promise<Order | null> => {
   if (role === Role.PROVIDER) {
-    return prisma.rentalOrder.findFirst({
+    return prisma.order.findFirst({
       where: {
         id: orderId,
-        items: {
-          some: { gearItem: { providerId: userId } },
-        },
       },
       include: {
-        items: {
-          include: {
-            gearItem: {
-              include: {
-                category: true,
-              },
-            },
-          },
-        },
-        payments: true,
+        gearItem: true,
+        payment: true,
       },
     });
   }
 
-  return prisma.rentalOrder.findFirst({
+  return prisma.order.findFirst({
     where: { id: orderId, customerId: userId },
     include: {
-      items: {
-        include: { gearItem: { include: { category: true } } },
+      gearItem: {
+        include: {
+          category: true,
+        },
       },
-      payments: true,
+      payment: true,
     },
   });
 };
 
 export const updateOrderStatus = async (
   input: UpdateOrderStatusInput,
-): Promise<RentalOrder> => {
-  const order = await prisma.rentalOrder.findUnique({
+): Promise<Order> => {
+  const order = await prisma.order.findUnique({
     where: { id: input.orderId },
-    include: { items: { include: { gearItem: true } } },
+    include: { gearItem: true },
   });
 
   if (!order) throw new Error("Order not found");
 
-  const userOwnsGear = order.items.some(
-    (item) => item.gearItem.providerId === input.providerId,
-  );
+  const userOwnsGear = order.gearItem.providerId === input.providerId;
 
   if (!userOwnsGear) {
     throw new Error("Unauthorized status modification attempt");
   }
 
-  return prisma.rentalOrder.update({
+  return prisma.order.update({
     where: { id: input.orderId },
     data: { status: input.status },
   });
 };
 
-export const fetchAllOrders = async (): Promise<RentalOrder[]> => {
-  return prisma.rentalOrder.findMany({
+export const fetchAllOrders = async (): Promise<Order[]> => {
+  return prisma.order.findMany({
     include: {
-      items: {
+      gearItem: {
         include: {
-          gearItem: {
-            include: {
-              category: {
-                select: { name: true },
-              },
-            },
-          },
+          category: true,
         },
       },
-      payments: {
-        select: {
-          id: true,
-          amount: true,
-          status: true,
-        },
-      },
+      payment: true,
     },
     orderBy: { createdAt: "desc" },
   });

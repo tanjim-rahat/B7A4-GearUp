@@ -14,6 +14,7 @@ import { Role } from "../../../generated/prisma/client";
 
 const router: Router = Router();
 
+// RENTAL ORDER PLACING FOR CUSTOMER
 router.post(
   "/",
   authenticateUser,

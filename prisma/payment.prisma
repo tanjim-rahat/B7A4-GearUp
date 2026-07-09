@@ -1,6 +1,6 @@
 model Payment {
   id                    String        @id @default(uuid())
-  rentalOrderId         String
+  orderId               String        @unique
   stripeSessionId       String        @unique // Stripe Checkout Session ID
   stripePaymentIntentId String?       @unique // Stripe Payment Intent ID for webhook tracking
   amount                Float
@@ -10,7 +10,7 @@ model Payment {
   updatedAt             DateTime      @updatedAt
 
   // Relations
-  rentalOrder RentalOrder @relation(fields: [rentalOrderId], references: [id], onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id])
 
   @@map("payments")
 }

@@ -6,11 +6,12 @@ export interface OrderItemInput {
   priceAtRental: number;
 }
 
-export interface CreateRentalOrderInput {
+export interface CreateOrderInput {
   customerId: string;
   startDate: string;
   endDate: string;
-  items: OrderItemInput[];
+  gearItemId: string;
+  quantity: number;
 }
 
 export interface UpdateOrderStatusInput {

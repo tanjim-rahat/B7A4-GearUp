@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import {
-  createRentalOrder,
+  createOrder,
   fetchAllOrders,
   fetchOrderById,
   fetchOrders,
@@ -14,20 +14,29 @@ export const placeOrderController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { startDate, endDate, items } = req.body;
-    if (!req.user || !startDate || !endDate || !items || !items.length) {
+    const { startDate, endDate, gearItemId, quantity } = req.body;
+    if (
+      !req.user ||
+      !startDate ||
+      !endDate ||
+      !gearItemId ||
+      quantity === undefined
+    ) {
       res.status(400).json({ error: "Missing required order fields" });
       return;
     }
 
-    const order = await createRentalOrder({
+    const order = await createOrder({
       customerId: req.user.id,
       startDate,
       endDate,
-      items,
+      gearItemId,
+      quantity,
     });
 
-    res.status(201).json({ message: "Rental placed successfully", order });
+    res
+      .status(201)
+      .json({ message: "Rental Order placed successfully", order });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
