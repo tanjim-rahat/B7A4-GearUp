@@ -7,6 +7,7 @@ import categoryRouter from "./modules/category/category.routes";
 import gearRouter from "./modules/gear/gear.routes";
 import orderRouter from "./modules/order/order.routes";
 import reviewRouter from "./modules/review/review.routes";
+import paymentRouter from "./modules/payment/payment.routes";
 
 const app: Application = express();
 
@@ -23,5 +24,6 @@ app.use("/api/category", categoryRouter);
 app.use("/api/gear", gearRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
+app.use("/api/payment", paymentRouter);
 
 export default app;
