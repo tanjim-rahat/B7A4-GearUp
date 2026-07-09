@@ -28,4 +28,14 @@ app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/payment", paymentRouter);
 
+// CATCH ALL ERROR HANDLER
+app.use((err: any, req: express.Request, res: express.Response) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+    details: err.message,
+  });
+});
+
 export default app;
